@@ -10,6 +10,8 @@ struct queue{
     int* data;
     unsigned int head;
     unsigned int tail;
+    bool block_push;
+    bool block_pop;
 };
 
 void queue_init(struct queue* queue);

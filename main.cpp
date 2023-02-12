@@ -6,12 +6,11 @@ int main()
     struct queue queue;
     queue_init(&queue);
 
-    queue_push(&queue, -2);
-    queue_push(&queue, -1);
-    for(int i = 0; i < 19; i++)
+    for(int i = 0; i < 23; i++)
     {
         queue_push(&queue, i);
-        int j = queue_pop(&queue);
+        if(i % 2 == 1)
+            queue_pop(&queue);
     }
 
     queue_delete(&queue);
