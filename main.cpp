@@ -3,6 +3,9 @@
 
 int main()
 {
-    printf("%d\n", MASK & 257);
+    struct queue queue;
+    queue_init(&queue);
+    queue_push(&queue, 25);
+    queue_delete(&queue);
     return 0;
 }
