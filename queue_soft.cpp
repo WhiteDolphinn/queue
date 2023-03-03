@@ -86,7 +86,7 @@ void queue_check(FILE* file, struct queue* queue, const char* filename, const ch
 
 void queue_check(FILE* file, struct queue* queue, const char* filename, const char* function_name, int line)
 {
-    queue->block_push = ((queue->head & MASK) - ((queue->tail + 1) & MASK) == 0);
+   queue->block_push = ((queue->head & MASK) - ((queue->tail + 1) & MASK) == 0);
     queue->block_pop = (queue->tail == queue->head);
 
     if(queue->block_push == true)
