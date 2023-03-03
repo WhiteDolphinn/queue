@@ -42,7 +42,7 @@ int queue_pop(struct queue* queue)
 {
     queue_check(get_log_file(), queue, __FILE__, __func__, __LINE__);
 
-    int i = 0;
+    int i = POISON;
     if(queue->block_pop == false)
     {
         i = queue->data[queue->head++];
@@ -52,6 +52,8 @@ int queue_pop(struct queue* queue)
     queue_check(get_log_file(), queue, __FILE__, __func__, __LINE__);
     return i;
 }
+
+#ifndef BLOCK_QUEUE_CHECK
 
 void queue_check(FILE* file, struct queue* queue, const char* filename, const char* function_name, int line)
 {
@@ -79,3 +81,19 @@ void queue_check(FILE* file, struct queue* queue, const char* filename, const ch
     fprintf(file, "========================\n\n");
 
 }
+
+#else
+
+void queue_check(FILE* file, struct queue* queue, const char* filename, const char* function_name, int line)
+{
+    queue->block_push = ((queue->head & MASK) - ((queue->tail + 1) & MASK) == 0);
+    queue->block_pop = (queue->tail == queue->head);
+
+    if(queue->block_push == true)
+        fprintf(file, "Pushing is blocked!!!\n");
+
+    if(queue->block_pop == true)
+        fprintf(file, "Poping is blocked!!!\n");
+}
+
+#endif
