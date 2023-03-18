@@ -5,12 +5,12 @@
 
 #define QUEUE_CHECK queue_check(get_log_file(".txt"), queue, __FILE__, __func__, __LINE__)
 
-void queue_init(struct queue* queue)
+void queue_init(struct queue* queue, unsigned int queue_size)
 {
     queue->head = 0;
     queue->tail = 0;
-    queue->size = 64;
-    queue->mask = queue->size - 1;
+    queue->size = queue_size;
+    //queue->mask = queue->size - 1;
     queue->block_push = false;
     queue->block_pop = true;
     queue->data = (int*)calloc(queue->size, sizeof(int));
@@ -18,6 +18,15 @@ void queue_init(struct queue* queue)
     for(unsigned int i = 0; i < queue->size; i++)
         queue->data[i] = POISON;
 
+    for(unsigned int i = 1; ; i *= 2)
+    {
+        if(queue->size <= i)
+        {
+            queue->mask = i - 1;
+            break;
+        }
+    }
+    printf("queue->mask = %u\n", queue->mask);
     QUEUE_CHECK;
 }
 
@@ -108,3 +117,11 @@ void queue_check(FILE* file, struct queue* queue, const char* filename, const ch
 }
 
 #endif
+
+void queue_resize(struct queue* queue, unsigned int new_queue_size)
+{
+    int* buf_data = (int*)realloc(queue->data, new_queue_size * sizeof(int));
+
+    if(buf_data != nullptr)
+        queue->data = buf_data;
+}
